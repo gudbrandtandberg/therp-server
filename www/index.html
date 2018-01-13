@@ -9,10 +9,20 @@
 </body>
 <script type=text/javascript>
     console.log("Hello, Gudbrand!")
-    
+    document.addEventListener('DOMContentLoaded', function(){ 
     document.getElementById("feed_image").onload = function(){
-        console.log("Onload")
+        var url = "http://localhost:12346"
+        fetch(url) // Call the fetch function passing the url of the API as a parameter
+        .then(function(data) {
+            // Your code for handling the data you get from the API
+            console.log(data.text())
+        })
+        .catch(function(error) {
+            // This is where you run code if the server returns any errors
+            console.log("Error")
+        });
     };
+   });
     
 </script>
 </html>

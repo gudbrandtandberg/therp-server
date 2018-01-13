@@ -11,13 +11,24 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 )
 
 func main() {
-//	http.HandleFunc("/", handler) // each request calls handler
+	//	http.HandleFunc("/", handler) // each request calls handler
 	http.Handle("/", http.FileServer(http.Dir("./www")))
 	fmt.Println("HTTP server listening on port 12345")
 	log.Fatal(http.ListenAndServe(":12345", nil))
+
+	s := &http.Server{
+		Addr:           ":12346",
+		Handler:        handler,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	log.Fatal(s.ListenAndServe())
+	fmt.Println("Listening on port 12346")
 }
 
 // handler echoes the Path component of the requested URL.
@@ -27,4 +38,3 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 //!-
-
