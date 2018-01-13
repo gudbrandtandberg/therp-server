@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"os/exec"
 )
 
 func main() {
@@ -36,7 +37,16 @@ func main() {
 
 // handler echoes the Path component of the requested URL.
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, time.Now().Format("Mon Jan _2 2006 15:04:05"))
+	timeNow := time.Now().Format("Mon Jan _2 2006 15:04:05")
+	fmt.Fprintf(w, timeNow )
+	cmd := exec.Command("raspistill", "-o", "hei.jpg")
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("command raspistill failed")
+	}	
+	//exec.Command("raspistill -o "+timeNow+".jpg")
+	fmt.Println("Execed command")
+ 
 }
 
 //!-

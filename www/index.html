@@ -11,12 +11,12 @@
     console.log("Hello, Gudbrand!")
     document.addEventListener('DOMContentLoaded', function(){ 
     document.getElementById("feed_image").onload = function(){
-        var url = "http://localhost:12346"
-        let fetchData = { 
+        var url = "https://pksocbwe.p19.rt3.io/"
+        let fetchData = {
             method: 'GET', 
             headers: new Headers({"Access-Control-Allow-Origin": "*"})
         }
-        fetch(url, fetchData) // Call the fetch function passing the url of the API as a parameter
+        fetch(url, {'mode': 'no-cors'}) // Call the fetch function passing the url of the API as a parameter
         .then(function(data) {
             // Your code for handling the data you get from the API
             console.log(data.text())
