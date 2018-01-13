@@ -5,28 +5,29 @@
 </head>
 <body>
 <h1> Living Room Live Stream: </h1>
-<img id="feed_image" src="./photos/g-low.jpg" width="100%"/>
-</body>
+<img id="feed_image" alt="No image..."  src="./img/most_recent.jpg" width="60%"/>
 <script type=text/javascript>
     console.log("Hello, Gudbrand!")
     document.addEventListener('DOMContentLoaded', function(){ 
-    document.getElementById("feed_image").onload = function(){
-        var url = "https://jbjzinwn.p19.rt3.io"
-        let fetchData = { 
-            method: 'GET', 
-            headers: new Headers({"Access-Control-Allow-Origin": "*"})
-        }
-        fetch(url, fetchData) // Call the fetch function passing the url of the API as a parameter
-        .then(function(data) {
+	console.log("Onload")
+    //document.getElementById("feed_image").onload = function(){
+    //    var url = "https://pksocbwe.p19.rt3.io/"
+    //    let fetchData = {
+    //        method: 'GET', 
+    //        headers: new Headers({"Access-Control-Allow-Origin": "*"})
+    //    }
+    //    fetch(url, {'mode': 'no-cors'}) // Call the fetch function passing the url of the API as a parameter
+     //   .then(function(data) {
             // Your code for handling the data you get from the API
-            console.log(data.text())
-        })
-        .catch(function(error) {
+      //      console.log(data.text())
+       // })
+       // .catch(function(error) {
             // This is where you run code if the server returns any errors
-            console.log("Error")
-        });
-    };
+        //    console.log("Error")
+        //});
+    //};
    });
     
 </script>
+</body>
 </html>
