@@ -9,32 +9,33 @@ package main
 
 import (
 	//	"strings"
+	"bytes"
+	"encoding/base64"
 	"fmt"
+	"html/template"
+	"image/jpeg"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
 func main() {
-	//	http.HandleFunc("/", handler) // each request calls handler
-	//	http.Handle("/", http.FileServer(http.Dir("./www")))
 
-	//	fmt.Println("HTTP server listening on port 12345")
-	//	go func() {
-	//		log.Fatal(http.ListenAndServe(":12345", nil))
-	//	}()
-
-	s := &http.Server{
-		Addr:    ":12345",
-		Handler: http.HandlerFunc(handler),
-		//Handler:        http.FileServer(http.Dir("./www/")),
+	server := &http.Server{
+		Addr:           ":12345",
+		Handler:        http.HandlerFunc(handler),
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 	fmt.Println("Listening on port 12345")
-	log.Fatal(s.ListenAndServe())
+	log.Fatal(server.ListenAndServe())
 }
+
+var ImageTemplate string = `<!DOCTYPE html>
+    <html lang="en"><head></head>
+    <body><h1>Living Room Live Stream</h1><img width="60%" src="data:image/jpg;base64,{{.Image}}"></body>`
 
 // handler echoes the Path component of the requested URL.
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -46,10 +47,50 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// if err != nil {
 	// 	fmt.Println("command raspistill failed")
 	// }
-
-	fmt.Println("Execed command at ", timeNow)
-	http.ServeFile(w, r, "./www/index.html")
+	//fmt.Println("Execed command at ", timeNow)
+	//http.ServeFile(w, r, "./www/index.html")
 	//http.FileServer(http.Dir("./www/")),
+
+	imageFile, err := os.Open("www/img/most_recent.jpg")
+	if err != nil {
+		fmt.Println("Image reading error!")
+	}
+	defer imageFile.Close()
+
+	loadedImage, err := jpeg.Decode(imageFile)
+	if err != nil {
+		fmt.Println("Decoding failed")
+	}
+
+	// In-memory buffer to store JPEG image
+	// before we base 64 encode it
+	var buff bytes.Buffer
+
+	// The Buffer satisfies the Writer interface so we can use it with Encode
+	// In previous example we encoded to a file, this time to a temp buffer
+	jpeg.Encode(&buff, loadedImage, nil)
+
+	// Encode the bytes in the buffer to a base64 string
+	encodedString := base64.StdEncoding.EncodeToString(buff.Bytes())
+
+	// You can embed it in an html doc with this string
+	//htmlImage := "<img src=\"data:image/png;base64," + encodedString + "\" />"
+	_ = timeNow
+	_ = encodedString
+
+	//w.Header().Set("Content-Length", strconv.Itoa(len(buff.Bytes())))
+	//w.Header().Set("Cache-Control", "no-cache")
+	//w.Header().Set("content-type", "text/html")
+
+	tmpl, err := template.New("image").Parse(ImageTemplate)
+	if err != nil {
+		log.Println("unable to parse image template.")
+	}
+	data := map[string]interface{}{"Image": encodedString}
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		log.Println("unable to execute template.")
+	}
 }
 
 //!-
