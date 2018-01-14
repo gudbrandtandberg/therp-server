@@ -17,6 +17,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"time"
 )
 
@@ -42,12 +43,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	timeNow := time.Now().Format("Mon Jan _2 2006 15:04:05")
 
 	// // Take a picture on the raspberry pi
-	// cmd := exec.Command("raspistill", "-t", "1", "-q", "10", "-o", "www/img/most_recent.jpg")
-	// err := cmd.Run()
-	// if err != nil {
-	// 	fmt.Println("command raspistill failed")
-	// }
-	//fmt.Println("Execed command at ", timeNow)
+	cmd := exec.Command("raspistill", "-t", "1", "-q", "10", "-o", "www/img/most_recent.jpg")
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("command raspistill failed")
+	}
+	fmt.Println("Execed command at ", timeNow)
 	//http.ServeFile(w, r, "./www/index.html")
 	//http.FileServer(http.Dir("./www/")),
 
